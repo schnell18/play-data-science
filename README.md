@@ -53,6 +53,7 @@ This project consists of follows parts:
 |   02    |  part-02-pandas-tour   |  brief intro w/ an example       |
 |   03    |  part-03-pandas-basic  |  basics of DataFrame             |
 |   04    |  part-04-query         |  query data w/ multiple criteria |
+|   05    |  part-05-query         |  cleanse and process data        |
 
 [1]: https://www.anaconda.com/products/distribution
 [2]: https://jupyter.org
