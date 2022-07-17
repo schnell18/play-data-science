@@ -53,7 +53,9 @@ This project consists of follows parts:
 |   02    |  part-02-pandas-tour   |  brief intro w/ an example       |
 |   03    |  part-03-pandas-basic  |  basics of DataFrame             |
 |   04    |  part-04-query         |  query data w/ multiple criteria |
-|   05    |  part-05-query         |  cleanse and process data        |
+|   05    |  part-05-cleanse       |  cleanse and process data        |
+|   06    |  part-06-multiindex    |  high-dimensional data example   |
+|   07    |  part-07-aggregation   |  aggregration and apply example  |
 
 [1]: https://www.anaconda.com/products/distribution
 [2]: https://jupyter.org
