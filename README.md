@@ -47,15 +47,16 @@ This project centers on the following three main topics:
 
 This project consists of follows parts:
 
-| part no |  sub-folder            |          description             |
-| ------- | ---------------------- | -------------------------------- |
-|   01    |  part-01-jupyter       |  explains environment setup      |
-|   02    |  part-02-pandas-tour   |  brief intro w/ an example       |
-|   03    |  part-03-pandas-basic  |  basics of DataFrame             |
-|   04    |  part-04-query         |  query data w/ multiple criteria |
-|   05    |  part-05-cleanse       |  cleanse and process data        |
-|   06    |  part-06-multiindex    |  high-dimensional data example   |
-|   07    |  part-07-aggregation   |  aggregration and apply example  |
+| part no |  sub-folder            |          description                  |
+| ------- | ---------------------- | ------------------------------------- |
+|   01    |  part-01-jupyter       |  explains environment setup           |
+|   02    |  part-02-pandas-tour   |  brief intro w/ an example            |
+|   03    |  part-03-pandas-basic  |  basics of DataFrame                  |
+|   04    |  part-04-query         |  query data w/ multiple criteria      |
+|   05    |  part-05-cleanse       |  cleanse and process data             |
+|   06    |  part-06-multiindex    |  high-dimensional data example        |
+|   07    |  part-07-aggregation   |  aggregration and apply example       |
+|   08    |  part-08-merge         |  use merge and concat to combine data |
 
 [1]: https://www.anaconda.com/products/distribution
 [2]: https://jupyter.org
