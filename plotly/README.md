@@ -14,6 +14,7 @@ Just type these commands:
     pip install jupyterlab pandas plotly
 
 Or:
+
     cd <PROJECT_ROOT>/plotly/
     pip install -r requirements.txt
 

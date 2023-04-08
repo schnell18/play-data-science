@@ -14,6 +14,7 @@ Just type these commands:
     pip install jupyterlab pyspark polars pandas pyarrow fastparquet
 
 Or:
+
     cd <PROJECT_ROOT>/parquet/
     pip install -r requirements.txt
 
