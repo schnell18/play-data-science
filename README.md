@@ -12,5 +12,5 @@ It includes common data science tools such as:
 It explores subjects such as:
 
 - data cleanse
-- plotting
+- data visualization
 - convert to/from external formats like csv, Excel, RDB, API etc
