@@ -8,6 +8,7 @@ It includes common data science tools such as:
 - polars
 - jupyter
 - jupysql
+- game-analysis
 
 It explores subjects such as:
 

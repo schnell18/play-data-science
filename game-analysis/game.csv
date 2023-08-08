@@ -1,0 +1,44 @@
+ID,want_win,pick,check_two_thirds,reason
+1,Yes,4,6,"If people are likely to choose 6, 4 is 2/3rds of that"
+2,Yes,10,8,blind guess
+3,Yes,4,9,Fav number
+4,Yes,7,"7, it's a lucky number",Cause I'm competitive
+5,No,9,9,9 is my lucky number.
+6,Yes,1,To be number one,You can win if you want
+7,Yes,7,7,my favorite number
+8,Yes,2,"6, its closest to 2/3 of the average (10 in this case)","i think the average will be lower than i initially expect, as everyone wants to guess 2/3 of the average, always bringing the actual average down"
+9,Yes,7,10,Because I want the extra marks
+10,Yes,7,"I would not choose 10 because I could stand out. However, considering the game is evaluated in thirds, choosing a number like 8 or 9 makes sense as it is close to the number but different enough to win.",I chose 7 originally because it is a high number but close enough to the middle.
+11,Yes,5,7 because 2/3 of 10 is 6.6,It is a middle number
+12,Yes,4,I would choose 4 because it reminds me of 24 and 24 is the funny number from Spongebob,Confidence
+13,Yes,3,6 because 2/3 times 10 is roughly between 6-7,"many people may likely choose a number in the middle, 2/3 times 5 is roughly 3 ish."
+14,Yes,2,I will still choose 2 because 2 is easy to work with.,Because winning makes me happy!
+15,Yes,2,"7. Everyone chose 10, 2/3 of 10 is 6.66",Assume most will assume average is 5. 2/3 of 5 is 3 -- which is what most people will select -- so go again and select 2/3 of 3
+16,Yes,2,"~7, since we know the average of the other students will be 10, our answer should be around 6 or 7 depending on how many students are in the class","If everyone in the classroom thinks rationally and comes to the same conclusion, that a lower number is better, the answer will tend towards 1 (since we take 2/3 of the average). I chose 2 because there might be a few students that misunderstood the question or chose something at random, skewing the result slightly towards 2. (Also, if everyone did in fact think rationally, everyone has the same answer, choosing 1 would yield nothing anyways, so I'll take the risk with number 2)"
+17,Yes,6,"1, winner will be the less people","average choice will keep the balance, will be more possible to win"
+18,Yes,3,"7, if everyone else chose 10, 2/3rds of the average would be 6.67 (slightly lower depending on my own guess)","I choose 3 as it is approximately 2/3rds of 5 which i estimate to be the average. As long as the average is between 3.75 and 5.25, then 3 will be the winning number. It is difficult to accurately guess how others will think."
+19,Yes,6,"Something not 10, all other people choose the same number doesn't mean that number has bigger chance to win.",because the winner will have 2 free marks
+20,No,1,7 it is the integer closest to two thirds of the average.,i have no interest in game theory.
+21,Yes,3,6. If everyone choose 10. The average is 10. The ten's two third is 6.,If random choose from 1 to 10. The average maybe is 5 or 6. The two third is close to 3
+22,Yes,7,"I still choose 7. Because still the average would be somewhere close to 10. Then if we take 2/3rd of the value, it would near to 7","It's fun. Moreover, helps at least a little bit for my final marks if I won."
+23,Yes,2,If everyone chooses 10 I would 6 because 2/3rd of the average would be between 6 and 7,I choose the number 2 because the highest probability of choosing a number at random between 1-10 is 7 after taking the 2/3rds of the average we should get the number 3 or 4. But lets say people are not picking at random and their goal is to win then everyone will logically pick a number that's 2/3rds of the average which should be 3 or 4
+24,Yes,2,7 as that would result in victory,"i think most people will pick 3, so 2 will get me the win"
+25,Yes,1,I will choose 1 because I always like to do things differently.,I chose 1 because i always like to win.
+26,Yes,6,"I would choose the number 6. Because, in a class of 55 to 60 people the if everyone chooses the number 10, the average number will be 9.8 and two thirds of 9.8 is 6.5. My chances of winning lies with picking the number 6 and 7.0",two thirds of the average of 55 to 60 people less 1 divided by the total in class gives me a figure close to the number picked by the majority of people in my class.
+27,Yes,3,"3, because my selection is independent of other selections.",My favourite number because of cultural significance and its importance in math.
+28,Yes,3,7 There are 7 days in a week. 7 colours in the rainbow.,"3 and 7 are odd and primes. And 3 is quite small, most of them might choose 7."
+29,Yes,4,"Since everyone else chooses 10, the average of all the chosen numbers would be (10 + 10 + ... + 10) / 35 = 10. I am assuming 35 is the number of students playing this game; 2/3 of 10 is about 6.7. To win the game, I will therefore select a number closest to 2/3 of the average, i.e. 1, as it is the lowest possible value within the range.","Without actual information about the chosen numbers, this strategy is based on assumptions and may not guarantee me a win. I will rely on making assumptions/employing general strategies. So, I will make an assumption about their distribution. In this case, I assume a uniform distribution where each number 1-10 is equally likely to be chosen by the players. I then calculate the expected average: (1+2+3+4+5+6+7+8+9+10) / 10 = 5.5. I will then calculate 2/3 of the expected average by multiplying it by 2/3 to determine the target value I need to get closest to (2/3 of 5.5 is approximately 3.7). Then, I select the number closest to 3.7, i.e. 4."
+30,Yes,7,7,It is the most commonly chosen number between 1 to 10
+31,Yes,10,it can give me chance to win the game,the number one of consider as top and I hopefully most of people can select this number and then I can have chance to win the game!
+32,Yes,1,"I'd choose the number 7. When the number of players is sufficiently large, the impact of individual choices on the final outcome becomes negligible, approaching a limit of approximately 6.667. Therefore, the integer 7 is closer in value.","This is a game without a dominant strategy. According to the assumption of homo economicus, players participating in the game would first eliminate impossible numbers. Under the given conditions, the maximum value of two-thirds of the final average is 6.667, which means only numbers 1 to 7 are valid. By following this logic, the final outcome will converge to the number 1."
+33,Yes,5,6 because thats 2/3rd or 66% of 10,Its closest to the average of first 10 numbers
+34,Yes,1,7 as 7 is the closest number to 2/3s of 10 which is 6.666,I thinks every once will think the answer is low and guess around 2
+35,Yes,1,3 - it will be 2/3rd of the average of 10,Logic
+36,Yes,1,7，because：Two-thirds of average = (2/3) * 10 ≈ 6.67，7 is the integer closest to 6.67,"According to the results of Question 3, everyone will not choose an integer bigger than 7 because when everyone chooses the maximum value of 10, two-thirds of average maxes out at 7. Along these lines, everyone would not choose a number more than (2/3) * 7 ≈ 4.67.Keep iterating and the end result will converge to 0, so I'll go with 1."
+37,Yes,3,"7. When everyone else chooses 10, the average is close to 10, and two-thirds of the average lie between 6 and 7..","When everyone chooses 10, the average is 10, and two-thirds of the average lie between 6 and 7. However, the probability that everyone chooses 10 is relatively small, so two-thirds of the average should be a random number less than 6."
+38,Yes,2,"If everyone else chooses 10, my first instinct would be to choose number 7 since it would be the closest to two thirds of the average value. Even if I choose a number between 5-9, that would also be closest to the two thirds of the average number. But, I would choose 9 since it would give me a bigger margin to win.","In an ideal case, if players try to select the nearest whole number to two-thirds of the average, it would trigger a chain reaction leading to a final result of 1. But in another case - taking random inputs into the consideration and assuming inputs in some proportions, I chose 2 as the answer."
+39,Yes,8,8,I just like its design (infinity)
+40,Yes,4,4,It is the best probability.
+41,Yes,7,I would choose 6. Most likely the outcome is 10 * 2/3 = 6.6. I have chosen 7 🙂,I would pick either 6 or 7. Assume all pick 10.
+42,Yes,4,random,random
+43,Yes,1,6,"2/3 of 10 is 6.5, so 6 or 7"
