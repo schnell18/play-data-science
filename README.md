@@ -1,7 +1,7 @@
 # Introduction
 
 This project include a collection of sub-projects to explore data science.
-It includes common data science tools such as:
+It includes common data science tools and topics such as:
 
 - numpy
 - pandas
@@ -9,6 +9,7 @@ It includes common data science tools such as:
 - jupyter
 - jupysql
 - game-analysis
+- social-mining
 
 It explores subjects such as:
 
