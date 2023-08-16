@@ -9,7 +9,7 @@ install the required dependency as documented in the requirements.txt.
 Just type these commands:
 
     cd ~/python-venvs
-    python -m venv jupysql
+    python3 -m venv jupysql
     source ~/python-venvs/jupysql/bin/activate
     cd <PROJECT_ROOT>/jupysql/
     pip install -r requirements.txt
