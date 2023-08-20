@@ -10,6 +10,7 @@ It includes common data science tools and topics such as:
 - jupysql
 - game-analysis
 - social-mining
+- msr-golang
 
 It explores subjects such as:
 
