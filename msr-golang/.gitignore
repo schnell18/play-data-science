@@ -3,4 +3,7 @@ credential.ini
 round?/
 ghs-compare/
 ghsgolang.csv
-
+mod-info*/
+*.csv
+*.pyo
+*.pyc
