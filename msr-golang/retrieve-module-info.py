@@ -6,7 +6,12 @@ from datagrab.gomod import grab_gomod
 
 
 def main(base_dir="mod-info", progress_file="progress.csv"):
-    grab_gomod("slim.csv", base_dir, progress_file)
+    grab_gomod(
+        "slim.csv",
+        base_dir=base_dir,
+        progress_file=progress_file,
+        show_progress=True
+    )
 
 if __name__ == "__main__":
     main()

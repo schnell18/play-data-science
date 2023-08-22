@@ -104,7 +104,6 @@ def do_mod_check(client, row, base_dir="mod-info", progress_file="progress.csv",
     owner = comps[0]
     name = comps[1]
 
-
     t0 = timer()
     use_module = load_mod_info(client, owner, name, base_dir)
     persist_progress(owner, name, use_module, base_dir, progress_file)
