@@ -38,6 +38,16 @@ def load_gomod(repo, path, version):
         return (False, None)
 
 
+def load_subdirs(repo, version):
+    # search in sub directory, descend one level
+    try:
+        contents = repo.get_contents(".", ref=version)
+        return [c.name for c in contents if c.type == 'dir' and not c.name.startswith('.')]
+    except Exception as e:
+        print(f"Fail to load sub directories of {repo.full_name}@{version} due to: {e}")
+        return []
+
+
 def persist_gomod(owner, repo_name, version, content, gmod_path, base_dir="mod-info"):
     # persist mod info into files for later analysis
     mod_file = f"{base_dir}/{owner}/{repo_name}/{version}/{gmod_path}"
@@ -83,9 +93,7 @@ def load_mod_info(client, owner, repo_name, base_dir="mod-info"):
             persist_gomod(owner, repo_name, ver, content.decoded_content, "go.mod", base_dir)
             mod_count += 1
         else:
-            # search in sub directory, descend one level
-            contents = repo.get_contents(".", ref=ver)
-            subdirs = [c.name for c in contents if c.type == 'dir' and not c.name.startswith('.')]
+            subdirs = load_subdirs(repo, ver)
             for subdir in subdirs:
                 gmod_path = f"{subdir}/go.mod"
                 ok, content = load_gomod(repo, gmod_path, ver)
@@ -99,7 +107,7 @@ def load_mod_info(client, owner, repo_name, base_dir="mod-info"):
 
 # client is the Github instance
 # row is a row of Pandas DataFrame
-def do_mod_check(client, row, base_dir="mod-info", progress_file="progress.csv", show_progress=False):
+def do_mod_check(client, row, base_dir="mod-info", progress_file="progress.csv", trace=False):
     comps = row['full_name'].split('/')
     owner = comps[0]
     name = comps[1]
@@ -108,12 +116,12 @@ def do_mod_check(client, row, base_dir="mod-info", progress_file="progress.csv",
     use_module = load_mod_info(client, owner, name, base_dir)
     persist_progress(owner, name, use_module, base_dir, progress_file)
     t1 = timer()
-    if show_progress:
+    if trace:
         print(f"Grab gomod for {owner}/{name} took {t1-t0}s")
     return use_module
 
 
-def grab_gomod(repo_csv_file, base_dir="mod-info", progress_file="progress.csv", show_progress=False):
+def grab_gomod(repo_csv_file, base_dir="mod-info", progress_file="progress.csv", trace=False):
     client = Github(load_access_token(), per_page=100) 
     to_check_df = pd.read_csv(repo_csv_file)
 
@@ -123,7 +131,7 @@ def grab_gomod(repo_csv_file, base_dir="mod-info", progress_file="progress.csv",
         df2 = to_check_df.merge(checked_df, how="left", on="full_name")
         # filter already processed repos, equivalent to SQL is null
         df2 = df2.query("use_module != use_module")
-        df2.apply(lambda r: do_mod_check(client, r, base_dir, progress_file, show_progress), axis=1)
+        df2.apply(lambda r: do_mod_check(client, r, base_dir, progress_file, trace), axis=1)
     else:
         df2 = to_check_df
-        df2.apply(lambda r: do_mod_check(client, r, base_dir, progress_file, show_progress), axis=1)
+        df2.apply(lambda r: do_mod_check(client, r, base_dir, progress_file, trace), axis=1)

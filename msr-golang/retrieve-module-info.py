@@ -10,7 +10,7 @@ def main(base_dir="mod-info", progress_file="progress.csv"):
         "slim.csv",
         base_dir=base_dir,
         progress_file=progress_file,
-        show_progress=True
+        trace=True
     )
 
 if __name__ == "__main__":
