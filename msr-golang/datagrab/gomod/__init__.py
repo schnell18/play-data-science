@@ -9,7 +9,7 @@ from .gomod import (
 
 __version__ = "1.0.0"
 
-__title__ = "MSG Data Grabber"
+__title__ = "MSR Data Grabber"
 __description__ = "Golang dependency Research Data Grabber in Python"
 __url__ = "https://github.com/schnell18"
 __uri__ = __url__

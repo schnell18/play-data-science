@@ -4,6 +4,8 @@ round?/
 ghs-compare/
 ghsgolang.csv
 mod-info*/
+.tmp/
 *.csv
+*.bak
 *.pyo
 *.pyc
