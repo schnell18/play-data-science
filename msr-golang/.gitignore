@@ -5,6 +5,7 @@ ghs-compare/
 ghsgolang.csv
 mod-info*/
 .tmp/
+*.log
 *.csv
 *.bak
 *.pyo

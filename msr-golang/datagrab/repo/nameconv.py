@@ -10,6 +10,29 @@ from timeit import default_timer as timer
 from pathlib import Path
 
 
+class GoImportMetaHTMLParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self._github_name = ""
+       
+    @property
+    def github_name(self):
+        return self._github_name
+         
+    def feed(self, text):
+        self._gith_name = ""
+        super().feed(text)
+
+    def handle_starttag(self, tag, attrs):
+        self._gith_name = ""
+        if tag == "meta":
+            imports_found = [attr for attr in attrs if attr[0] == "name" and attr[1] == "go-import"]
+            contents = [attr[1] for attr in attrs if attr[0] == "content"]
+            if imports_found and contents:
+                comps = contents[0].split(' ')
+                idx = comps[2].find("//")
+                self._github_name = comps[2] if idx < 0 else comps[2][idx+2:]
+
 def persist_progress(module, github_name, base_dir, progress_file):
     # persist mod info into files for later analysis
     mod_file = f"{base_dir}/{progress_file}"
@@ -29,8 +52,9 @@ def convert_name(parser, module, base_dir, progress_file, trace=False):
     t0 = timer()
     try:
         if trace: print(f"work on {module}")
+        q = {"go-get": "1"}
         request_url = f"https://{module}"
-        resp = requests.get(request_url)
+        resp = requests.get(request_url, params=q, allow_redirects=True)
         parser.feed(resp.text)
         github_name = parser.github_name
         persist_progress(module, github_name, base_dir, progress_file)
@@ -43,26 +67,6 @@ def convert_name(parser, module, base_dir, progress_file, trace=False):
 
     return ""
 
-
-class GoImportMetaHTMLParser(HTMLParser):
-    def __init__(self):
-        HTMLParser.__init__(self)
-        self._github_name = ""
-       
-    @property
-    def github_name(self):
-        return self._github_name
-         
-    def handle_starttag(self, tag, attrs):
-        self._gith_name = ""
-        if tag == "meta":
-            imports_found = [attr for attr in attrs if attr[0] == "name" and attr[1] == "go-import"]
-            contents = [attr[1] for attr in attrs if attr[0] == "content"]
-            if imports_found and contents:
-                comps = contents[0].split(' ')
-                idx = comps[2].index("//")
-                self._github_name = comps[2] if idx < 0 else comps[2][idx+2:]
-                
 
 def convert_names(repo_csv_file, base_dir="mod-info", progress_file="name-conv-progress.csv", trace=False):
     parser = GoImportMetaHTMLParser()

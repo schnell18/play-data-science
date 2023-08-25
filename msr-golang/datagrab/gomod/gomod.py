@@ -29,6 +29,14 @@ def semver_sort(ver_list):
     return [f"v{sv}" for sv in svers]
 
 
+def load_repo_info(client, repo_name):
+    try:
+        return client.get_repo(repo_name) 
+    except Exception as e:
+        print(f"Fail to load {repo_name} due to: {e}")
+        return None
+
+
 def load_gomod(repo, path, version):
     try:
         content = repo.get_contents(path, ref=version)
@@ -76,32 +84,33 @@ def format_date(d):
 def load_mod_info(client, owner, repo_name, base_dir="mod-info"):
 
     mod_count = 0
-    repo = client.get_repo(f"{owner}/{repo_name}")
-    # try all tagged versions plus latest version on default branch
-    # content = repo.get_contents("go.mod", ref="v0.3.0")
-    tags = repo.get_tags()
-    vers = [t.name for t in tags if t.name.startswith('v') and semver.version.Version.is_valid(t.name[1:])]
-    if len(vers) == 0:
-        vers.append(repo.default_branch)
-    else:
-        # sort vers according to semver
-        vers = semver_sort(vers)
-
-    for ver in vers:
-        ok, content = load_gomod(repo, "go.mod", ver)
-        if ok:
-            persist_gomod(owner, repo_name, ver, content.decoded_content, "go.mod", base_dir)
-            mod_count += 1
+    repo = load_repo_info(client, f"{owner}/{repo_name}")
+    if repo:
+        # try all tagged versions plus latest version on default branch
+        # content = repo.get_contents("go.mod", ref="v0.3.0")
+        tags = repo.get_tags()
+        vers = [t.name for t in tags if t.name.startswith('v') and semver.version.Version.is_valid(t.name[1:])]
+        if len(vers) == 0:
+            vers.append(repo.default_branch)
         else:
-            subdirs = load_subdirs(repo, ver)
-            for subdir in subdirs:
-                gmod_path = f"{subdir}/go.mod"
-                ok, content = load_gomod(repo, gmod_path, ver)
-                if ok:
-                    persist_gomod(owner, repo_name, ver, content.decoded_content, gmod_path, base_dir)
-                    mod_count += 1
-                    break
-            else: break
+            # sort vers according to semver
+            vers = semver_sort(vers)
+
+        for ver in vers:
+            ok, content = load_gomod(repo, "go.mod", ver)
+            if ok:
+                persist_gomod(owner, repo_name, ver, content.decoded_content, "go.mod", base_dir)
+                mod_count += 1
+            else:
+                subdirs = load_subdirs(repo, ver)
+                for subdir in subdirs:
+                    gmod_path = f"{subdir}/go.mod"
+                    ok, content = load_gomod(repo, gmod_path, ver)
+                    if ok:
+                        persist_gomod(owner, repo_name, ver, content.decoded_content, gmod_path, base_dir)
+                        mod_count += 1
+                        break
+                else: break
 
     return mod_count > 0
 

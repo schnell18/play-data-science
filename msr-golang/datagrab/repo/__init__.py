@@ -1,5 +1,7 @@
 from .nameconv import (
     convert_names,
+    convert_name,
+    GoImportMetaHTMLParser,
 )
 
 __version__ = "1.0.0"
@@ -19,5 +21,7 @@ __copyright__ = "Copyright 2015-2023 Justin Zhang"
 
 __all__ = [
     "convert_names",
+    "convert_names",
+    "GoImportMetaHTMLParser",
 ]
 
