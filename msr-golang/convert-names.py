@@ -6,8 +6,8 @@ from datagrab.repo import convert_names
 
 if __name__ == "__main__":
     convert_names(
-        "module-refs.csv",
-        progress_file=="name-conv-progress.csv",
+        "name-conv-module-refs.csv",
+        progress_file="name-conv-progress.csv",
         trace=True
     )
 

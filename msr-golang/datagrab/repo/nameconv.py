@@ -9,8 +9,9 @@ from html.parser import HTMLParser
 from datetime import date, datetime, timedelta
 from timeit import default_timer as timer
 from pathlib import Path
-from urllib3 import SSLError
-from urllib3 import NameResolutionError
+from requests.exceptions import ConnectionError
+from requests.exceptions import SSLError
+from requests.exceptions import TooManyRedirects
 
 
 class GoImportMetaHTMLParser(HTMLParser):
@@ -84,11 +85,15 @@ def convert_name(parser, module, base_dir, progress_file, trace=False):
             resp = requests.get(request_url, params=q, allow_redirects=True)
             parser.feed(resp.text)
             github_name = parser.github_name
-    except NameResolutionError as e:
-        fail_reason = "NameResolutionError"
+
+    except ConnectionError as e:
+        fail_reason = "ConnectionError"
         print(f"fail to convert {module} to github name due to {e}")
     except SSLError as e:
         fail_reason = "SSLError"
+        print(f"fail to convert {module} to github name due to {e}")
+    except TooManyRedirects as e:
+        fail_reason = "TooManyRedirects"
         print(f"fail to convert {module} to github name due to {e}")
     except Exception as e:
         print(type(e))
@@ -113,7 +118,8 @@ def convert_names(repo_csv_file, progress_file="name-conv-progress.csv", trace=F
         df2 = to_check_df.merge(checked_df, how="left", on="module")
         # filter already processed repos, equivalent to SQL is null
         df2 = df2.query("github_name != github_name")
-        df2.apply(lambda r: convert_name(parser, r["module"], base_dir, progress_file, trace), axis=1)
+        if not df2.empty:
+            df2.apply(lambda r: convert_name(parser, r["module"], base_dir, progress_file, trace), axis=1)
     else:
         df2 = to_check_df
         df2.apply(lambda r: convert_name(parser, r["module"], base_dir, progress_file, trace), axis=1)
