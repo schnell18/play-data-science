@@ -3,6 +3,7 @@
 
 import pandas as pd
 import requests
+import re
 
 from html.parser import HTMLParser
 from datetime import date, datetime, timedelta
@@ -29,9 +30,10 @@ class GoImportMetaHTMLParser(HTMLParser):
             imports_found = [attr for attr in attrs if attr[0] == "name" and attr[1] == "go-import"]
             contents = [attr[1] for attr in attrs if attr[0] == "content"]
             if imports_found and contents:
-                comps = contents[0].split(' ')
-                idx = comps[2].find("//")
-                self._github_name = comps[2] if idx < 0 else comps[2][idx+2:]
+                comps = re.split(r"\s+", contents[0])
+                if len(comps) == 3:
+                    idx = comps[2].find("//")
+                    self._github_name = comps[2] if idx < 0 else comps[2][idx+2:]
 
 def persist_progress(module, github_name, base_dir, progress_file):
     # persist mod info into files for later analysis
@@ -46,17 +48,39 @@ def persist_progress(module, github_name, base_dir, progress_file):
         f.write(f"{module},{github_name if github_name else '-'},{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 
+def _parse_gopkgin_path(module):
+    comps = module.split('/')
+    user = None
+    pkg_ver = None
+    if len(comps) == 2:
+        pkg_ver = comps[1]
+    else:
+        user = comps[1]
+        pkg_ver = comps[2]
+
+    pkg, ver = pkg_ver.split('.')
+    return user, pkg, ver
+
+
 # client is the Github instance
 # row is a row of Pandas DataFrame
 def convert_name(parser, module, base_dir, progress_file, trace=False):
     t0 = timer()
     try:
+        github_name = ""
         if trace: print(f"work on {module}")
-        q = {"go-get": "1"}
-        request_url = f"https://{module}"
-        resp = requests.get(request_url, params=q, allow_redirects=True)
-        parser.feed(resp.text)
-        github_name = parser.github_name
+        # handle gopkg.in with static conversion according to the rules
+        # published on https://labix.org/gopkg.in
+        if module.startswith("gopkg.in"):
+            user, pkg, _ = _parse_gopkgin_path(module)
+            if not user: user = f"go-{pkg}"
+            github_name = f"github.com/{user}/{pkg}"
+        else:
+            q = {"go-get": "1"}
+            request_url = f"https://{module}"
+            resp = requests.get(request_url, params=q, allow_redirects=True)
+            parser.feed(resp.text)
+            github_name = parser.github_name
         persist_progress(module, github_name, base_dir, progress_file)
         t1 = timer()
         if trace:
