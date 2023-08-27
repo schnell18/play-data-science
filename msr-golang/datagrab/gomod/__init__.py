@@ -4,7 +4,8 @@ from .gomod import (
     persist_gomod,
     persist_progress,
     load_mod_info,
-    grab_gomod
+    grab_gomod,
+    grab_latest_version,
 )
 
 __version__ = "1.0.0"
@@ -29,4 +30,5 @@ __all__ = [
     "persist_progress",
     "load_mod_info",
     "grab_gomod",
+    "grab_latest_version",
 ]
