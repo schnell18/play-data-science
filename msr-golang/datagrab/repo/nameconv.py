@@ -9,6 +9,8 @@ from html.parser import HTMLParser
 from datetime import date, datetime, timedelta
 from timeit import default_timer as timer
 from pathlib import Path
+from urllib3 import SSLError
+from urllib3 import NameResolutionError
 
 
 class GoImportMetaHTMLParser(HTMLParser):
@@ -35,17 +37,17 @@ class GoImportMetaHTMLParser(HTMLParser):
                     idx = comps[2].find("//")
                     self._github_name = comps[2] if idx < 0 else comps[2][idx+2:]
 
-def persist_progress(module, github_name, base_dir, progress_file):
+def persist_progress(module, github_name, fail_reason, base_dir, progress_file):
     # persist mod info into files for later analysis
     mod_file = f"{base_dir}/{progress_file}"
     sub = Path(mod_file[0:-len(progress_file)])
     sub.mkdir(parents=True, exist_ok=True)
     if not Path(mod_file).exists():
         with open(mod_file, 'w') as f:
-            f.write("module,github_name,last_updated\n")
+            f.write("module,github_name,fail_reason,last_updated\n")
 
     with open(mod_file, 'a') as f:
-        f.write(f"{module},{github_name if github_name else '-'},{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"{module},{github_name if github_name else '-'},{fail_reason},{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 
 def _parse_gopkgin_path(module):
@@ -66,8 +68,9 @@ def _parse_gopkgin_path(module):
 # row is a row of Pandas DataFrame
 def convert_name(parser, module, base_dir, progress_file, trace=False):
     t0 = timer()
+    github_name = ""
+    fail_reason = ""
     try:
-        github_name = ""
         if trace: print(f"work on {module}")
         # handle gopkg.in with static conversion according to the rules
         # published on https://labix.org/gopkg.in
@@ -81,18 +84,26 @@ def convert_name(parser, module, base_dir, progress_file, trace=False):
             resp = requests.get(request_url, params=q, allow_redirects=True)
             parser.feed(resp.text)
             github_name = parser.github_name
-        persist_progress(module, github_name, base_dir, progress_file)
-        t1 = timer()
-        if trace:
-            print(f"Convert {module} to {github_name} took {t1-t0}s")
-        return github_name
-    except Exception as e:
+    except NameResolutionError as e:
+        fail_reason = "NameResolutionError"
         print(f"fail to convert {module} to github name due to {e}")
+    except SSLError as e:
+        fail_reason = "SSLError"
+        print(f"fail to convert {module} to github name due to {e}")
+    except Exception as e:
+        print(type(e))
+        print(f"fail to convert {module} to github name due to {e}")
+    finally:
+        persist_progress(module, github_name, fail_reason, base_dir, progress_file)
 
-    return ""
+    t1 = timer()
+    if trace:
+        print(f"Convert {module} to {github_name} took {t1-t0}s")
+    return github_name
 
 
-def convert_names(repo_csv_file, base_dir="mod-info", progress_file="name-conv-progress.csv", trace=False):
+def convert_names(repo_csv_file, progress_file="name-conv-progress.csv", trace=False):
+    base_dir = "."
     parser = GoImportMetaHTMLParser()
     to_check_df = pd.read_csv(repo_csv_file)
 

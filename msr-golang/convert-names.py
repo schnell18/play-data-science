@@ -7,7 +7,7 @@ from datagrab.repo import convert_names
 if __name__ == "__main__":
     convert_names(
         "module-refs.csv",
-        base_dir="mod-info.oci",
+        progress_file=="name-conv-progress.csv",
         trace=True
     )
 
