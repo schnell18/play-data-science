@@ -33,7 +33,7 @@ def load_repo_info(client, repo_name):
     try:
         return client.get_repo(repo_name) 
     except Exception as e:
-        print(f"Fail to load {repo_name} due to: {e}")
+        print(f"Fail to locate {repo_name} due to: {e}")
         return None
 
 
@@ -97,9 +97,11 @@ def load_latest_ver(client, owner, repo_name):
 
 def load_mod_info(client, owner, repo_name, base_dir="mod-info"):
 
-    mod_count = 0
     repo = load_repo_info(client, f"{owner}/{repo_name}")
-    if repo:
+    if not repo:
+        return False, ""
+    else:
+        mod_count = 0
         # try all tagged versions plus latest version on default branch
         # content = repo.get_contents("go.mod", ref="v0.3.0")
         tags = repo.get_tags()
@@ -127,7 +129,6 @@ def load_mod_info(client, owner, repo_name, base_dir="mod-info"):
                         break
                 else: break
 
-    return mod_count > 0, latest_ver
 
 # client is the Github instance
 # row is a row of Pandas DataFrame
