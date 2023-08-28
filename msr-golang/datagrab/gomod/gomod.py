@@ -128,6 +128,7 @@ def load_mod_info(client, owner, repo_name, base_dir="mod-info"):
                         mod_count += 1
                         break
                 else: break
+        return mod_count > 0, latest_ver
 
 
 # client is the Github instance
