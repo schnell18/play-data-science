@@ -1,19 +1,17 @@
 from pygobuildinfo import get_go_mod
-from pathlib import Path
 from os import listdir
 from os.path import isfile, join, isdir
 from pathlib import Path
 
-
-
 __all__ = [
-    "parse_deps",
+    "parse_deps"
 ]
 
 
 def persist_deps(module, version, deps, f):
     for pair in deps:
         f.write(f"{module},{pair[0]},{version},{pair[1]},{pair[2]}\n")
+
     
 def parse_deps(base_dir="mod-info", deps_file="dependencies.csv", trace=False):
     # persist mod dependencies
@@ -44,6 +42,8 @@ def parse_deps(base_dir="mod-info", deps_file="dependencies.csv", trace=False):
                                 # parse go.mod
                                 deps = _parse_deps(gmod_path, trace)
                                 persist_deps(f"{owner}/{repo}/{subdir}", version, deps, f)
+
+
 # Returns: list of depedencies (module, version)
 def _parse_deps(gmod_path, trace=False):
     if Path(gmod_path).exists():
@@ -52,4 +52,5 @@ def _parse_deps(gmod_path, trace=False):
         if 'Deps' in dikt:
             return [(dikt.get('Path', ''), d['Path'], d['Version']) for d in dikt['Deps'] if not d['Indirect']]
     return []
+
 

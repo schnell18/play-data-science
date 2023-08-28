@@ -81,7 +81,7 @@ def format_date(d):
     return d.strftime("%Y-%m-%d")
 
 
-def load_latest_ver(client, owner, repo_name, base_dir="mod-info"):
+def load_latest_ver(client, owner, repo_name):
 
     repo = load_repo_info(client, f"{owner}/{repo_name}")
     if repo:
