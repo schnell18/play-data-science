@@ -45,4 +45,4 @@ def snve_as_parquet(base_dir="mod-info", dest_file="gomod.parquet"):
                             })
 
     df = pd.DataFrame(dikt_list)
-    df.to_parquet({dest_file}, compression="snappy", index=False)
+    df.to_parquet(dest_file, compression="snappy", index=False)
