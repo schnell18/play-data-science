@@ -2,8 +2,10 @@ credential.ini
 .venv/
 round?/
 ghs-compare/
+go-repos/
 ghsgolang.csv
 mod-info*/
+commit-info*/
 .tmp/
 *.log
 *.csv

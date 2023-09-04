@@ -7,19 +7,13 @@ import numpy as np
 import semver
 # import json
 # import requests
-import configparser
 import time
 from github import Github
 from datetime import date, datetime, timedelta
 from timeit import default_timer as timer
 from pathlib import Path
-
-
-def load_access_token():
-    parser = configparser.ConfigParser()
-    parser.read('credential.ini')
-    section = parser['github']
-    return section['access_token']
+from .common import load_access_token
+from .common import load_repo_info
 
 
 # semver comparison
@@ -27,14 +21,6 @@ def semver_sort(ver_list):
     svers = [semver.version.Version.parse(v[1:] if v.startswith("v") else v) for v in ver_list]
     svers.sort(reverse=True)
     return [f"v{sv}" for sv in svers]
-
-
-def load_repo_info(client, repo_name):
-    try:
-        return client.get_repo(repo_name) 
-    except Exception as e:
-        print(f"Fail to locate {repo_name} due to: {e}")
-        return None
 
 
 def load_gomod(repo, path, version):
