@@ -7,6 +7,7 @@ import numpy as np
 import json
 from github import Github
 from datetime import date, datetime, timedelta
+from isodate import parse_datetime
 from timeit import default_timer as timer
 from pathlib import Path
 from .common import load_access_token
@@ -88,7 +89,7 @@ def _write_json(fh, raw_data):
 
 def _date_conv(iso_str):
     if iso_str:
-        dt = datetime.fromisoformat(iso_str)
+        dt = parse_datetime(iso_str)
         return dt.strftime("%Y-%m-%d %H:%M:%S")
     else:
         return ""
