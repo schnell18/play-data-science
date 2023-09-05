@@ -137,6 +137,7 @@ def grab_commits(repo_csv_file, base_dir="commit-info", progress_file="progress.
         checked_df = pd.read_csv(progress_path)
         df2 = to_check_df.merge(checked_df, how="left", on="full_name")
         # filter already processed repos, equivalent to SQL is null
+        df2 = df.query("commits != commits")
         df2.apply(lambda r: do_commit_fetch(client, r, base_dir, progress_file, trace), axis=1)
     else:
         df2 = to_check_df
