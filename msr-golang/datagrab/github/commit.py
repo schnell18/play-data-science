@@ -77,7 +77,7 @@ def load_commits(client, owner, repo_name, base_dir="commit-info", trace=False):
                         for c in page:
                             raw_data = vars(c).get("_rawData", None)
                             if raw_data:
-                                _write_csv(fh_csv, repo_name, owner, default_branch, raw_data)
+                                _write_csv(fh_csv, owner, repo_name, default_branch, raw_data)
                                 _write_json(fh_json, raw_data)
 
         return default_branch, commits
