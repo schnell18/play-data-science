@@ -44,7 +44,7 @@ def collect_data(start_year, end_year, extra_year_range, lang, fork, stars, slic
         if trace:
             print(f"Collect {lang} data between {date_range[0]} and {date_range[1]} took {t1-t0} seconds")
         df = pd.DataFrame(dict_list)
-        df.to_excel("%s/%s-repo-%d-%s-%s.xlsx" % (subdir, lang, stars, date_range[0], date_range[1]))
+        df.to_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, lang, stars, date_range[0], date_range[1]))
         t2 = timer()
         if trace:
             print(f"Save {lang} data between {date_range[0]} and {date_range[1]} took {t2-t1} seconds")
@@ -52,10 +52,10 @@ def collect_data(start_year, end_year, extra_year_range, lang, fork, stars, slic
     t3 = timer()
     cost_dfs = []
     for date_range in date_ranges:
-        df = pd.read_excel("%s/%s-repo-%d-%s-%s.xlsx" % (subdir, lang, stars, date_range[0], date_range[1]))
+        df = pd.read_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, lang, stars, date_range[0], date_range[1]))
         cost_dfs.append(df)
     combined = pd.concat(cost_dfs)
-    combined.to_excel("%s/%s-repo-%d-combined.xlsx" % (subdir, lang, stars))
+    combined.to_csv("%s/%s-repo-%d-combined.csv" % (subdir, lang, stars))
     t4 = timer()
 
     if trace:
