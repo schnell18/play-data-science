@@ -105,7 +105,7 @@ def _write_csv(fh, owner, repo_name, default_branch, raw_data):
     if cmit:
         authr = cmit.get("author", None)
         if authr:
-            author_name = authr["name"]
+            author_name = '"' + authr["name"] + '"' # quote author name
             author_date = "" if not authr["date"] else _date_conv(authr["date"])
         veri = cmit.get("verification", None)
         if veri and veri["verified"]: verified = 1
