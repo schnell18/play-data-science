@@ -21,11 +21,11 @@ def search_repo_iteratively(client, dict_list, fork, stars, start, end, lang, to
         query_str = f"lang:{lang} {query_str}"
     if topics is not None and len(topics) > 0:
         for topic in topics:
-            _do_search(f"topic:{topic} {query_str}", dict_list)
+            _do_search(client, f"topic:{topic} {query_str}", dict_list)
     else:
-        _do_search(query_str, dict_list)
+        _do_search(client, query_str, dict_list)
 
-def _do_search(query_str, dict_list):
+def _do_search(client, query_str, dict_list):
     repositories = client.search_repositories(query_str, sort="stars", order="desc")
     for repo in repositories:
         old_dict = vars(repo)
