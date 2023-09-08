@@ -71,7 +71,7 @@ def _search_key(langs, topics):
     lng = ""
     tpc = ""
     if langs is not None: lng = "-".join(langs)
-    if topics is not None: tpc = "-".join([x.replace(' ', '_') for x in t])
+    if topics is not None: tpc = "-".join([x.replace(' ', '_') for x in topics])
 
     if lng == "": return tpc
     if tpc == "": return lng
