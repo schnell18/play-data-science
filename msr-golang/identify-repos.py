@@ -23,8 +23,8 @@ def parse_args():
     
     # Add arguments
     parser.add_argument('-o', '--output-dir', required=True, help='Path to save output files')
-    parser.add_argument('-f', '--fork', action="store_true", default=False, help='Include fork repostory')
-    parser.add_argument('-l', '--lang', action="append", help='Main language, repeat this option to specify multiple languages')
+    parser.add_argument('-f', '--fork', action="store_true", default=False, help='Include forked repostory')
+    parser.add_argument('-l', '--lang', help='Main language of the repository')
     parser.add_argument('-t', '--topic', action="append", help='Topic to search, repeat this option to specify multiple topics')
     parser.add_argument('-d', '--trace', action="store_true", default=False, help='Print trace messages')
     parser.add_argument('-s', '--stars', default=10, help='Minimal stars')
@@ -34,7 +34,7 @@ def parse_args():
     
     # Parse the arguments
     args = parser.parse_args()
-    if (args.lang is None or len(args.lang) == 0) and (args.topic is None or len(args.topic) == 0):
+    if (args.lang is None or args.lang == '') and (args.topic is None or len(args.topic) == 0):
         parser.error("Either --topic or --lang is mandatory")
     return args
 
@@ -48,15 +48,15 @@ if __name__ == "__main__":
     trace      = args.trace
     stars      = args.stars
     slice      = args.span
-    langs      = args.lang
+    lang       = args.lang
     start_year = args.start_year
     topics     = args.topic
     end_date   = datetime.strptime(args.end_date, "%Y-%m-%d")
     end_year   = end_date.year - 1
     extra      = (date(end_date.year, 1, 1), end_date.date())
 
-    collect_data(
-        start_year, end_year, extra, fork, stars, slice, subdir,
-        langs=langs, topics=topics, trace=trace 
-    )
+    # collect_data(
+    #     start_year, end_year, extra, fork, stars, slice, subdir,
+    #     lang, topics=topics, trace=trace 
+    # )
 

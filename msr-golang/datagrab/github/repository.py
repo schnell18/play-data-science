@@ -14,32 +14,25 @@ import time
 import numpy as np
 import pandas as pd
 
-def search_repo_iteratively(client, dict_list, fork, stars, start, end, langs=[], topics=[]):
+def search_repo_iteratively(client, dict_list, fork, stars, start, end, lang, topics=[]):
     fork_str = "true" if fork else "false"
     query_str = f"stars:>={stars} fork:{fork_str} created:{start}..{end}";
-    if langs is not None and len(langs) > 0:
-        query_str += " "
-        if len(langs) > 1:
-            query_str += "lang:("
-            query_str += " OR ".join([lang for lang in langs])
-            query_str += ")"
-        else:
-            query_str += f"lang:{langs[0]}
+    if lang is not None and lang != '':
+        query_str = f"lang:{lang} {query_str}"
     if topics is not None and len(topics) > 0:
-        query_str += " "
-        if len(topics) > 1:
-            query_str += "topic:("
-            query_str += " OR ".join([topic for topic in topics])
-            query_str += ")"
-        else:
-            query_str += f"topic:{topics[0]}
+        for topic in topics:
+            _do_search(f"topic:{topic} {query_str}", dict_list)
+    else:
+        _do_search(query_str, dict_list)
+
+def _do_search(query_str, dict_list):
     repositories = client.search_repositories(query_str, sort="stars", order="desc")
     for repo in repositories:
         old_dict = vars(repo)
         dict_list.append({k:v for k,v in old_dict['_rawData'].items()})
         
 
-def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, subdir, langs=[], topics=[], trace=False):
+def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, subdir, lang, topics=[], trace=False):
     sub = Path(subdir)
     sub.mkdir(exist_ok=True)
     client = Github(load_access_token(), per_page=100)
@@ -50,12 +43,12 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
         date_ranges.append(extra_year_range)
         
     date_ranges = date_ranges[::-1]
-    search_key = _search_key(langs, topics)
+    search_key = _search_key(lang, topics)
     for date_range in date_ranges:
         t0 = timer()
         dict_list = []
         for t in daterange(date_range[0], date_range[1], slice):
-            search_repo_iteratively(client, dict_list, fork, stars, format_date(t[0]), format_date(t[1]), langs=langs, topics=topics)
+            search_repo_iteratively(client, dict_list, fork, stars, format_date(t[0]), format_date(t[1]), lang, topics=topics)
         t1 = timer()
         if trace:
             print(f"Collect {search_key} data between {date_range[0]} and {date_range[1]} took {t1-t0} seconds")
@@ -77,10 +70,9 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
     if trace:
         print(f"Combine and save {search_key} data took {t4-t3} seconds")
 
-def _search_key(langs, topics):
-    lng = ""
+def _search_key(lang, topics):
+    lng = "" if lang is None or lang == '' else lang
     tpc = ""
-    if langs is not None: lng = "-".join(langs)
     if topics is not None: tpc = "-".join([x.replace(' ', '_') for x in topics])
 
     if lng == "": return tpc
