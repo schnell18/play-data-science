@@ -40,6 +40,7 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
         date_ranges.append(extra_year_range)
         
     date_ranges = date_ranges[::-1]
+    search_key = _search_key(langs, topics)
     for date_range in date_ranges:
         t0 = timer()
         dict_list = []
@@ -47,16 +48,15 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
             search_repo_iteratively(client, dict_list, fork, stars, format_date(t[0]), format_date(t[1]), langs=langs, topics=topics)
         t1 = timer()
         if trace:
-            print(f"Collect {lang} data between {date_range[0]} and {date_range[1]} took {t1-t0} seconds")
+            print(f"Collect {search_key} data between {date_range[0]} and {date_range[1]} took {t1-t0} seconds")
         df = pd.DataFrame(dict_list)
-        df.to_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, lang, stars, date_range[0], date_range[1]))
+        df.to_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, search_key, stars, date_range[0], date_range[1]))
         t2 = timer()
         if trace:
-            print(f"Save {lang} data between {date_range[0]} and {date_range[1]} took {t2-t1} seconds")
+            print(f"Save {search_key} data between {date_range[0]} and {date_range[1]} took {t2-t1} seconds")
     
     t3 = timer()
     cost_dfs = []
-    search_key = _search_key(langs, topics)
     for date_range in date_ranges:
         df = pd.read_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, search_key, stars, date_range[0], date_range[1]))
         cost_dfs.append(df)
@@ -65,7 +65,7 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
     t4 = timer()
 
     if trace:
-        print(f"Combine and save {lang} data took {t4-t3} seconds")
+        print(f"Combine and save {search_key} data took {t4-t3} seconds")
 
 def _search_key(langs, topics):
     lng = "-".join(langs)
