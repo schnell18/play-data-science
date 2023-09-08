@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument('-d', '--trace', action="store_true", default=False, help='Print trace messages')
     parser.add_argument('-s', '--stars', default=10, help='Minimal stars')
     parser.add_argument('--span', default=15, help='Days in one search trial, default 15')
-    parser.add_argument('--start-year', default=2008, help='Start year of the search, in YYYY format, default 2008')
+    parser.add_argument('--start-year', type=int, default=2008, help='Start year of the search, in YYYY format, default 2008')
     parser.add_argument('--end-date', type=validate_date, default=datetime.today().strftime("%Y-%m-%d"), help='End date in YYYY-MM-DD format of the search, default today')
     
     # Parse the arguments
