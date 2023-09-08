@@ -14,17 +14,22 @@ import time
 import numpy as np
 import pandas as pd
 
-def search_repo_iteratively(client, dict_list, lang, fork, stars, start, end):
+def search_repo_iteratively(client, dict_list, fork, stars, start, end, langs=[], topics=[]):
     fork_str = "true" if fork else "false"
-    # query_str = f"lang:{lang} stars:>={stars} fork:{fork_str} archived:false template:false created:{start}..{end}";
-    query_str = f"lang:{lang} stars:>={stars} fork:{fork_str} created:{start}..{end}";
+    query_str = f"stars:>={stars} fork:{fork_str} created:{start}..{end}";
+    if langs is not None and len(langs) > 0:
+        query_str += " "
+        query_str += "+".join([f"lang:{lang}" for lang in langs])
+    if topic is not None and len(topics) > 0:
+        query_str += " "
+        query_str += "+".join([f"topic:{topic}" for topic in topics])
     repositories = client.search_repositories(query_str, sort="stars", order="desc")
     for repo in repositories:
         old_dict = vars(repo)
         dict_list.append({k:v for k,v in old_dict['_rawData'].items()})
         
 
-def collect_data(start_year, end_year, extra_year_range, lang, fork, stars, slice, subdir, trace=False):
+def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, subdir, langs=[], topics=[], trace=False):
     sub = Path(subdir)
     sub.mkdir(exist_ok=True)
     client = Github(load_access_token(), per_page=100)
@@ -39,7 +44,7 @@ def collect_data(start_year, end_year, extra_year_range, lang, fork, stars, slic
         t0 = timer()
         dict_list = []
         for t in daterange(date_range[0], date_range[1], slice):
-            search_repo_iteratively(client, dict_list, lang, fork, stars, format_date(t[0]), format_date(t[1]))
+            search_repo_iteratively(client, dict_list, fork, stars, format_date(t[0]), format_date(t[1]), langs=langs, topics=topics)
         t1 = timer()
         if trace:
             print(f"Collect {lang} data between {date_range[0]} and {date_range[1]} took {t1-t0} seconds")
