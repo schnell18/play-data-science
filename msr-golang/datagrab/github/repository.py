@@ -56,12 +56,18 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
     
     t3 = timer()
     cost_dfs = []
+    search_key = _search_key(langs, topics)
     for date_range in date_ranges:
-        df = pd.read_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, lang, stars, date_range[0], date_range[1]))
+        df = pd.read_csv("%s/%s-repo-%d-%s-%s.csv" % (subdir, search_key, stars, date_range[0], date_range[1]))
         cost_dfs.append(df)
     combined = pd.concat(cost_dfs)
-    combined.to_csv("%s/%s-repo-%d-combined.csv" % (subdir, lang, stars))
+    combined.to_csv("%s/%s-repo-%d-combined.csv" % (subdir, search_key, stars))
     t4 = timer()
 
     if trace:
         print(f"Combine and save {lang} data took {t4-t3} seconds")
+
+def _search_key(langs, topics):
+    lng = "-".join(langs)
+    tpc = "-".join([x.replace(' ', '_') for x in t])
+    return f"{lng}_{tpc}"
