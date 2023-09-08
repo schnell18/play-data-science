@@ -55,8 +55,8 @@ if __name__ == "__main__":
     end_year   = end_date.year - 1
     extra      = (date(end_date.year, 1, 1), end_date.date())
 
-    # collect_data(
-    #     start_year, end_year, extra, fork, stars, slice, subdir,
-    #     lang, topics=topics, trace=trace 
-    # )
+    collect_data(
+        start_year, end_year, extra, fork, stars, slice, subdir,
+        lang, topics=topics, trace=trace 
+    )
 
