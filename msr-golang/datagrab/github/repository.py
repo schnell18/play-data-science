@@ -20,7 +20,7 @@ def search_repo_iteratively(client, dict_list, fork, stars, start, end, langs=[]
     if langs is not None and len(langs) > 0:
         query_str += " "
         query_str += "+".join([f"lang:{lang}" for lang in langs])
-    if topic is not None and len(topics) > 0:
+    if topics is not None and len(topics) > 0:
         query_str += " "
         query_str += "+".join([f"topic:{topic}" for topic in topics])
     repositories = client.search_repositories(query_str, sort="stars", order="desc")
