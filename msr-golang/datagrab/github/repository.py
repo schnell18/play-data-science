@@ -68,6 +68,11 @@ def collect_data(start_year, end_year, extra_year_range, fork, stars, slice, sub
         print(f"Combine and save {search_key} data took {t4-t3} seconds")
 
 def _search_key(langs, topics):
-    lng = "-".join(langs)
-    tpc = "-".join([x.replace(' ', '_') for x in t])
+    lng = ""
+    tpc = ""
+    if langs is not None: lng = "-".join(langs)
+    if topics is not None: tpc = "-".join([x.replace(' ', '_') for x in t])
+
+    if lng == "": return tpc
+    if tpc == "": return lng
     return f"{lng}_{tpc}"
