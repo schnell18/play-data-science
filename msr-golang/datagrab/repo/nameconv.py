@@ -38,6 +38,7 @@ class GoImportMetaHTMLParser(HTMLParser):
                     idx = comps[2].find("//")
                     self._github_name = comps[2] if idx < 0 else comps[2][idx+2:]
 
+
 def persist_progress(module, github_name, fail_reason, base_dir, progress_file):
     # persist mod info into files for later analysis
     mod_file = f"{base_dir}/{progress_file}"
