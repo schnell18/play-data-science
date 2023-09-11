@@ -80,7 +80,7 @@ class GoMod:
     ModulePathDirectivePat = re.compile("module\s+(.*)")
     GoVersionDirectivePat  = re.compile("go\s+(.*)")
     ToolchainDirectivePat  = re.compile("tailchain\s+(.*)")
-    RequireDirectivePat1   = re.compile("require\s+(.*?)\s+(v.+)")
+    RequireDirectivePat1   = re.compile("^\s*require\s+(.*?)\s+(v.+)$", re.MULTILINE)
     RequireDirectivePat2   = re.compile("require\s+\(\s*\n\s*(?:.*\s+v.+\n)+\)")
     RequireDirectivePat21  = re.compile("^\s*(\w+(?:.*?))\s+(v.+)$", re.MULTILINE)
     #ReplaceDirectivePat1   = re.compile("replace\s+(.*?)\s+(v.+)?\s*=>\s*(.*)\s+(v.+)?")
@@ -101,6 +101,10 @@ class GoMod:
         self._parse(content)
 
     def _parse(self, content):
+        # strip pure comment lines
+
+        lines = content.split("\n")
+        content = "\n".join([line for line in lines if not re.match(r"^\s*//.*", line)])
 
         m = re.search(GoMod.ModulePathDirectivePat, content)
         if m: self._module_path = m.group(1)

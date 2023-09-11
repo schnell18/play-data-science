@@ -32,6 +32,7 @@ def _parse_record(row, f):
     
 def parse_deps_from_parquet(parquet_file, deps_file="dependencies.csv", trace=False):
     df = pd.read_parquet(parquet_file)
+    _prepare_csv(deps_file)
     with open(deps_file, 'a') as f:
         df.apply(lambda row: _parse_record(row, f), axis=1)
 
