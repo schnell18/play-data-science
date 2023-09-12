@@ -19,7 +19,7 @@ def validate_date(date_string):
 def parse_args():
 
     # Create the parser
-    parser = argparse.ArgumentParser(description='MSR repository finder')
+    parser = argparse.ArgumentParser(description='Github repository finder')
     
     # Add arguments
     parser.add_argument('-o', '--output-dir', required=True, help='Path to save output files')
