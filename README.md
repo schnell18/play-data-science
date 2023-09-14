@@ -11,6 +11,7 @@ It includes common data science tools and topics such as:
 - game-analysis
 - social-mining
 - msr-golang
+- linear-regression
 
 It explores subjects such as:
 
