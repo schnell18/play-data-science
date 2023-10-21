@@ -12,6 +12,7 @@ It includes common data science tools and topics such as:
 - social-mining
 - msr-golang
 - linear-regression
+- msr-ai
 
 It explores subjects such as:
 
