@@ -13,6 +13,7 @@ It includes common data science tools and topics such as:
 - msr-golang
 - linear-regression
 - msr-ai
+- r-intro
 
 It explores subjects such as:
 
