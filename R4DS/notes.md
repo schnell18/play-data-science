@@ -13,11 +13,11 @@ learning materials.
 ## Data science process
 
 
-                            => Visualize
+                                => Visualize
 
-Import => Tidy => Transform               => Communicate
+    Import => Tidy => Transform               => Communicate
 
-                            => Model
+                                => Model
 
 The data science process is iterative by nature.
 The process starts with importing external data into R as dataframe.
@@ -35,7 +35,7 @@ conventional dataframe is enhanced to be tipples.
 ## Visualize
 
 Load the dependencies:
-~~~~{R}
+~~~~R
 library(tidyverse)
 library(palmerpenguins)
 library(ggthemes)
@@ -48,7 +48,7 @@ The first argument to this function is the dataset.
 A plot contains a number of layers.
 
 Plot penguins flipper length vs body mass:
-~~~~{R}
+~~~~R
 ggplot(
   data = penguins,
   mapping = aes(x=flipper_length_mm, y=body_mass_g)
@@ -67,7 +67,7 @@ ggplot(
 We can use morden expression to simply above code snippet as:
 
 
-~~~~{R}
+~~~~R
 penguins |>
 ggplot(
   aes(x=flipper_length_mm, y=body_mass_g)
@@ -92,13 +92,13 @@ In this case, the `penguins` data frame is plotted using `ggplot()` function.
 Tyically we use bar to display categorical data. For example, we display penguins
 count by species as follows:
 
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x=species)) + 
   geom_bar()
 ~~~~
 
 Display in descreasing order:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x=fct_infreq(species))) + 
   geom_bar()
 ~~~~
@@ -108,12 +108,12 @@ ggplot(penguins, aes(x=fct_infreq(species))) +
 Tyically we use histogram to display numeric data. For example, we display penguins
 body mass as follows:
 
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x=body_mass_g)) + 
   geom_histogram(binwidth=200)
 ~~~~
 To show the distribution, we offen pair the histogram with density plot:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x=body_mass_g)) + 
   geom_density() +
   geom_histogram(binwidth=200)
@@ -132,13 +132,13 @@ box denotes the 50th percentile. The points outside the 1.5 times the IRQ are
 outliers. The whisker shows the farest non-outlier data points.
 
 Sample boxplot for penguins body mass:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = species, y = body_mass_g)) +
   geom_boxplot()
 ~~~~
 
 An alternative is the density plot:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = body_mass_g, color=species, fill=species)) +
   geom_density(alpha=0.5)
 ~~~~
@@ -149,13 +149,13 @@ We can use stacked bar plots show the relationship between two categorical
 variables.
 
 Example(Y-axis is the count):
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = island, fill=species)) +
   geom_bar()
 ~~~~
 
 Example(Y-axis is the percentage):
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = island, fill = species)) +
   geom_bar(position = "fill")
 ~~~~
@@ -166,14 +166,14 @@ Scatterplot is commonly used to show the relationship of two numerical
 variables.
 
 Example:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point()
 ~~~~
 
 To plot more variables using scatter plot, we can use shape and color.
 Example:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color=species, shape=island))
 ~~~~
@@ -183,7 +183,7 @@ of elements are presented. So ggplot offers a better method to present multiple
 variables involving categorical variable, the facet.
 
 Example:
-~~~~{R}
+~~~~R
 ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color=species, shape=species)) +
   facet_wrap()
