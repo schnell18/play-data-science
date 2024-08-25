@@ -24,3 +24,5 @@ ipython_config.py
 # Mac OS
 .DS_Store
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks
+.Rproj.user
+.Rhistory

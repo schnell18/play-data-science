@@ -17,5 +17,5 @@ ggplot(penguins, aes(x=body_mass_g)) +
 
 # Q4
 ggplot(diamonds, aes(x=carat)) + 
-  geom_histogram(binwidth=0.4)
+  geom_histogram(binwidth = 0.4)
 
