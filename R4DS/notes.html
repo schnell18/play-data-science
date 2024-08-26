@@ -361,7 +361,8 @@ with R</a> by the rstudio team is also worth reading. The <a href="https://ggplo
 Analysis (3e)</a> focus on visualization. The <a href="https://www.tmwr.org/">Tidy Modeling with R</a> elaborates how to
 create statistical and machine learning models. The <a href="https://www.bigbookofr.com/">Big Book of R</a> a comprehensive
 catalog of R books, book clubs, interview skills and online learning
-materials.</p>
+materials. For deep learning, checkout the <a href="https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/">Deep
+learning and Scientific Computing with R torch</a>.</p>
 <div id="preparation" class="section level2">
 <h2>Preparation</h2>
 <div id="install-r-ide" class="section level3">
@@ -722,15 +723,18 @@ ties by default. If you don’t want ties, you can pass
 <code>with_ties = FALSE</code> in these functions.</p>
 </div>
 </div>
-<div id="tidy-data" class="section level2">
-<h2>Tidy data</h2>
+</div>
+<div id="tidy-data" class="section level1">
+<h1>Tidy data</h1>
 <p>The rules for a tidy dataset include: - Each variable is a column and
 each column is a variable - Each observation is a row and each row is an
 observation - Each value is a cell, each cell is a single value</p>
 <p>Tidy dataset is easier to work with in the tidyverse. Most built-in
 functions in R works well with vector variable.</p>
-<div id="pivot-data" class="section level3">
-<h3>Pivot data</h3>
+<div id="pivot-data" class="section level2">
+<h2>Pivot data</h2>
+<div id="make-table-longer" class="section level3">
+<h3>Make table longer</h3>
 <p>The <code>pivot_longer()</code> function turns columns into rows. It
 selects a list of columns by prefix/surfix, a new column to store the
 selected column names is created using the name specified by parameter
@@ -774,6 +778,12 @@ numeric suffix.</p>
     names_sep = &quot;_&quot;, 
     values_drop_na = TRUE
   )</code></pre>
+<p>The position of new column to store the captured identifier is the
+same as it appears in the column name. In the previous example the
+identifier <code>child</code> is the second position, so we set the new
+field <code>child</code> as the second element in the list passed to
+<code>names_to</code> parameter of <code>pivot_longer()</code>
+function.</p>
 <pre class="r"><code>household1 &lt;- household |&gt; 
   rename(
     child1_dob = dob_child1,
@@ -789,6 +799,93 @@ household1 |&gt;
     values_drop_na = TRUE
   )</code></pre>
 </div>
+<div id="widen-table" class="section level3">
+<h3>Widen table</h3>
+<p>The <code>pivot_wider()</code> function can turn the row into
+columns. It is useful to show column with low cardinality in column
+format. To use this function, we need specify: - id_cols: the list of
+identifying fields - names_from: the column contains values as new
+columns - values_from: the column contains values as values</p>
+<pre class="r"><code>cms_patient_experience |&gt; 
+  pivot_wider(
+    id_cols = starts_with(&quot;org&quot;),
+    names_from = measure_cd,
+    values_from = prf_rate
+  )</code></pre>
+</div>
+</div>
+</div>
+<div id="data-file-io" class="section level1">
+<h1>Data file I/O</h1>
+<div id="import-data" class="section level2">
+<h2>Import data</h2>
+<p>R supports numerous data formats. To read text file such as CSV, we
+can use the <code>readr</code> package, which offers the
+<code>read_csv()</code> function. The <code>read_csv()</code> function
+can read local file and remote file using HTTP.</p>
+<pre class="r"><code>students &lt;- read_csv(&quot;data/students.csv&quot;, na = c(&quot;N/A&quot;, &quot;&quot;))</code></pre>
+<p>To normalize field naming, we can apply the
+<code>janitor::clean_names()</code> to the dataframe. The default
+behavior of the function is to apply snake case to the names and remove
+spaces in the name.</p>
+<pre class="r"><code>students &lt;- read_csv(&quot;data/students.csv&quot;, na = c(&quot;N/A&quot;, &quot;&quot;))
+students &lt;- students |&gt;
+  janitor::clean_names() |&gt; 
+  mutate(
+    meal_plan = factor(meal_plan),
+    age = parse_number(if_else(age == &quot;five&quot;, &quot;5&quot;, age))
+  )</code></pre>
+<p>Read multiple csv files:</p>
+<pre class="r"><code>sales_files &lt;- c(
+  &quot;https://pos.it/r4ds-01-sales&quot;,
+  &quot;https://pos.it/r4ds-02-sales&quot;,
+  &quot;https://pos.it/r4ds-03-sales&quot;
+)
+sales &lt;- read_csv(sales_files, id = &quot;file&quot;)</code></pre>
+<p>Summary of importing a csv file: - normalize NA values by specifying
+alternative NA representations - use factor data type to represent
+categorical data - extract number from text - convert column name to
+snake case</p>
+</div>
+<div id="export-data" class="section level2">
+<h2>Export data</h2>
+<p>We can export data by: - export textual: format
+write_csv()/write_tsv() of readr package - export binary RDS:
+write_rds() of readr package - export binary parquet: write_parquet() of
+arrow package</p>
+<p>The binary RDS is a R native format, it can restore the data type
+precisely. The binary parquet is a fast cross-language binary data
+format, it requires the <code>arrow</code> package.</p>
+<pre class="r"><code>library(arrow)
+write_parquet(students, &quot;students.parquet&quot;)
+read_parquet(&quot;students.parquet&quot;)</code></pre>
+</div>
+<div id="enter-small-test-data" class="section level2">
+<h2>Enter small test data</h2>
+<p>The <code>tribble()</code> function(transposed tibble) helps us to
+enter tabular data in an intuitive way. Column head is prefixed with
+tilde, columns are separated by comma.</p>
+<pre class="r"><code>tribble(
+  ~X,  ~Y,  ~Z, 
+  1, &quot;H&quot;, 0.08,
+  2, &quot;M&quot;, 0.89,
+  3, &quot;G&quot;, 0.71,
+  4, &quot;B&quot;, 0.81
+)</code></pre>
+</div>
+</div>
+<div id="trouble-shooting" class="section level1">
+<h1>Trouble shooting</h1>
+<div id="create-reproducible-example" class="section level2">
+<h2>create reproducible example</h2>
+<p>We can use the the reprex::reprex package to format the R code to
+reproduce a problem. To include data, we can use the <code>dput()</code>
+function to serialize a dataframe as code to reconstruct it.</p>
+</div>
+<div id="continuous-learning" class="section level2">
+<h2>continuous learning</h2>
+<p>Read <a href="https://www.tidyverse.org/blog/">tidyverse blog</a> and
+<a href="https://rweekly.org/">R Weekly</a>.</p>
 </div>
 </div>
 
