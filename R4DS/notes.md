@@ -1,11 +1,12 @@
-# Introduction
+Introduction
 
 This document is the reading notes of [R for Data Science(2e)][1]. The book's
 cover is a near-extinct parrot species named kakapo which is native to New
 Zealand. Besides this book, the [Hands-On Programming with R][2] by the rstudio
 team is also worth reading. The [ggplot2: Elegant Graphics for Data Analysis
-(3e)][4] focus on visualization. The [Tidy Modeling with R][5] elaborates how to
-create statistical and machine learning models. The [Big Book of R][3] a
+(3e)][4] and [Interactive web-based data visualization with R, plotly, and
+shiny][10] focus on visualization. The [Tidy Modeling with R][5] elaborates how
+to create statistical and machine learning models. The [Big Book of R][3] a
 comprehensive catalog of R books, book clubs, interview skills and online
 learning materials. For deep learning, checkout the [Deep learning and
 Scientific Computing with R torch][9].
@@ -694,3 +695,4 @@ Read [tidyverse blog][7] and [R Weekly][8].
 [7]: https://www.tidyverse.org/blog/
 [8]: https://rweekly.org/
 [9]: https://skeydan.github.io/Deep-Learning-and-Scientific-Computing-with-R-torch/ 
+[10]: https://plotly-r.com/
