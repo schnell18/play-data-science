@@ -2,14 +2,11 @@ library(plotly)
 library(safetensors)
 library(jsonlite)
    
-create_3d_plot2 <- function(i, j, weight, scen, title, block_size=1024) {
-  rs <- (i - 1) * block_size
-  re <- i * block_size
-  cs <- (j - 1) * block_size
-  ce <- j * block_size
-  z <- weight[rs:re,cs:ce]
-  x <- rs:re
-  y <- cs:ce
+create_3d_plot2 <- function(weight, scen, title) {
+  d <- dim(weight)
+  z <- weight
+  x <- 1:d[1]
+  y <- 1:d[2]
   
   plot_ly(
     x = x, y = y, z = z,
@@ -32,11 +29,22 @@ get_tensor <- function(matrix_name, base_dir, index_json='model.safetensors.inde
   }
 }
 
-
 get_tensor2 <- function(matrix_name, base_dir, st_file) {
   st_file_fp <- file.path(base_dir, st_file)
   tensors <- safe_load_file(st_file_fp)
   return(tensors[[matrix_name]])
+}
+
+get_region <- function(cx, cy, bs, upper_x=4096, upper_y=4096) {
+  sxs <- cx - bs / 2 + 1
+  sxe <- cx + bs / 2
+  sxs <- if (sxs < 1) 1 else sxs
+  sxe <- if (sxe > upper_x) upper_x else sxe
+  sys <- cy - bs / 2 + 1
+  sye <- cy + bs / 2
+  sys <- if (sys < 1) 1 else sys
+  sye <- if (sye > upper_y) upper_y else sye
+  return (list(sxs = sxs,sxe=sxe, sys=sys,sye=sye))
 }
 
 matrix <- "31.self_attn.o_proj"
@@ -51,8 +59,15 @@ wo <- as.matrix(wo)
 wq <- get_tensor2(quant_matrix, base_dir, st_file)
 wq <- as.matrix(wq)
 
-p1 <- create_3d_plot2(1, 1, wo, "scene1", matrix, block_size = 2048)
-p2 <- create_3d_plot2(1, 1, wq, "scene1", matrix, block_size = 2048)
+# plot sub region of matrix -----------------------------------------------
+bs <- 512
+cx <- 2533
+cy <- 3037
+ret <- get_region(cx, cy, bs)
+wo1 <- wo[ret$sxs:ret$sxe, ret$sys:ret$sye]
+wq1 <- wq[ret$sxs:ret$sxe, ret$sys:ret$sye]
+p1 <- create_3d_plot2(wo1, "scene1", matrix)
+p2 <- create_3d_plot2(wq1, "scene1", matrix)
 
 fig1 <- subplot(p1) |> 
   layout(
