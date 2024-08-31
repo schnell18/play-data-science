@@ -1,3 +1,5 @@
+# renv::init()
+# renv::use_python(type = 'conda', name = 'llm-quant')
 library(plotly)
 library(safetensors)
 library(jsonlite)
