@@ -1,4 +1,5 @@
-
+library(palmerpenguins)
+library(ggthemes)
 # Plot penguins bill length vs bill depth:
 
 ggplot(

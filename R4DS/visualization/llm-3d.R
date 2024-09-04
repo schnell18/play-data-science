@@ -4,7 +4,7 @@ library(plotly)
 library(safetensors)
 library(jsonlite)
    
-create_3d_plot2 <- function(weight, scen, title) {
+create_3d_plot2 <- function(weight, title) {
   d <- dim(weight)
   z <- weight
   x <- 1:d[1]
@@ -14,7 +14,7 @@ create_3d_plot2 <- function(weight, scen, title) {
     x = x, y = y, z = z,
     type = "surface", alpha = 0.6,
     colorscale = 'coloraxis',
-    scene = scen
+    showscale = FALSE
   )
   # colorscale = list(c(-1, 0, 1), c("blue", "white", "green"))
 }
@@ -53,7 +53,8 @@ matrix <- "31.self_attn.o_proj"
 
 orig_matrix <- paste0("model.layers.", matrix, ".weight")
 quant_matrix <- paste0("model.layers.", matrix, ".qweight")
-base_dir <- "~/work/hqq/examples/llama2_benchmark/snapshots/cmp"
+# base_dir <- "~/work/hqq/examples/llama2_benchmark/snapshots/cmp"
+base_dir <- "~/work/llm-quant/snapshots"
 base_dir <- path.expand(base_dir)
 st_file <- "Llama-2-7b-hf-cmp.safetensors"
 wo <- get_tensor2(orig_matrix, base_dir, st_file)
@@ -68,26 +69,29 @@ cy <- 3037
 ret <- get_region(cx, cy, bs)
 wo1 <- wo[ret$sxs:ret$sxe, ret$sys:ret$sye]
 wq1 <- wq[ret$sxs:ret$sxe, ret$sys:ret$sye]
-p1 <- create_3d_plot2(wo1, "scene1", matrix)
-p2 <- create_3d_plot2(wq1, "scene1", matrix)
+p1 <- create_3d_plot2(wo1, matrix)
+p2 <- create_3d_plot2(wq1, matrix)
 
 fig1 <- subplot(p1) |> 
   layout(
-    title = "Llama-2-7B Original Weight",
-    scene1 = list(
+    #title = "Llama-2-7B Original Weight",
+    scene = list(
       domain = list(row = 1, column = 1),
       zaxis = list(title = "Weight", range = c(-1.7, 1.7)),
-      camera = list(eye = list(x = 1.5, y = 1.5, z = 0.3))
+      camera = list(eye = list(x = 1.5, y = 1.2, z = 0.3)),
+      aspectratio = list(x = 0.9, y = 0.85, z = 0.9)
     )
   )
 fig2 <- subplot(p2) |> 
   layout(
-    title = "Llama-2-7B Quantized Weight",
-    scene1 = list(
+    #title = "Llama-2-7B Quantized Weight",
+    scene = list(
       domain = list(row = 1, column = 1),
       zaxis = list(title = "Weight", range = c(-1.7, 1.7)),
       camera = list(eye = list(x = 1.5, y = 1.5, z = 0.3))
     )
   )
-save_image(fig1, "llama2-7B-orig.pdf")
-save_image(fig2, "llama2-7B-quant.pdf")
+save_image(fig1, "llama2-7b-3D-orig.pdf", weight = 1400, height = 1000)
+save_image(fig2, "llama2-7b-3D-quant.pdf", scale = 2)
+
+save_image(fig1, "llama2-7b-3D-orig.pdf", scale = 3)

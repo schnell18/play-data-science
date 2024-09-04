@@ -15,7 +15,7 @@ lp_norm_surface_13 <- function(x, y) {
 }
 
 lp_norm_surface_12 <- function(x, y) {
-  return(lp_norm_surface(0.7, x, y))
+  return(lp_norm_surface(2, x, y))
 }
 
 # Generate a grid of points in 2D space
