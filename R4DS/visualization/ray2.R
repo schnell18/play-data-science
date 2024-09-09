@@ -8,4 +8,9 @@ gg = ggplot(diamonds, aes(x, depth)) +
                   n = 100,bins = 10,contour = TRUE) +
   facet_wrap(clarity~.) +
   scale_fill_viridis_c(option = "A")
-plot_gg(gg,multicore=TRUE,width=5,height=5,scale=250)
+
+plot_gg(gg, width = 5, height = 5, raytrace = TRUE, preview = TRUE)
+plot_gg(gg, width = 5, height = 5, multicore = TRUE, scale = 250, 
+        zoom = 0.7, theta = 10, phi = 30, windowsize = c(800, 800))
+Sys.sleep(0.2)
+render_snapshot(clear = TRUE)
