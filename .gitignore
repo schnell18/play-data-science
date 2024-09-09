@@ -9,6 +9,7 @@
 .virtual_documents/
 */.ipynb_checkpoints/*
 */.virtual_documents/*
+libs/
 
 # IPython
 profile_default/
@@ -26,3 +27,5 @@ ipython_config.py
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks
 .Rproj.user
 .Rhistory
+*.pdf
+
