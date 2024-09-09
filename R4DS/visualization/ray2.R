@@ -14,3 +14,7 @@ plot_gg(gg, width = 5, height = 5, multicore = TRUE, scale = 250,
         zoom = 0.7, theta = 10, phi = 30, windowsize = c(800, 800))
 Sys.sleep(0.2)
 render_snapshot(clear = TRUE)
+render_highquality(lightdirection = c(-45,45), lightaltitude  = 30, clamp_value = 10, 
+                   samples = 256, camera_lookat= c(0,-50,0),
+                   ground_material = diffuse(color="grey50",checkercolor = "grey20", checkerperiod = 100),
+                   clear = TRUE)

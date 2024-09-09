@@ -1,6 +1,7 @@
 library(tidyverse)
 library(ggthemes)
 library(readr)
+library(rayshader)
 
 # wdist <- read_csv("~/study/aut-study/master-thesis/kube-sft/data/wdist-Meta-Llama-3.1-405B-Instruct.csv")
 wdist <- read_csv("~/study/aut-study/master-thesis/kube-sft/data/wdist-Llama-2-7b-hf.csv")
@@ -25,10 +26,9 @@ wdist <- wdist |>
     nth_percentile = factor(nth_percentile, levels = rev(percentiles))
   )
 
-ggplot(wdist, aes(x = layer, y = abs_val, fill = nth_percentile)) +
+gg <- ggplot(wdist, aes(x = layer, y = abs_val, fill = nth_percentile)) +
   geom_bar(stat = "identity", color = "gray50") +
   facet_wrap(~module) +
   scale_color_tableau()
+plot_gg(gg, width = 5, height = 5, raytrace = TRUE, preview = TRUE)
 
-wdist |> 
-  filter(nth_percentile == 0 & abs_val > 0.0001)
