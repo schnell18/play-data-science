@@ -14,9 +14,11 @@ It includes common data science tools and topics such as:
 - linear-regression
 - msr-ai
 - r-intro
+- ViT
 
 It explores subjects such as:
 
 - data cleanse
 - data visualization
 - convert to/from external formats like csv, Excel, RDB, API etc
+- multi-modal LLM for classification, content generation etc.
