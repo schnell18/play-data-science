@@ -15,6 +15,7 @@ It includes common data science tools and topics such as:
 - msr-ai
 - r-intro
 - ViT
+- ray101
 
 It explores subjects such as:
 
@@ -22,3 +23,4 @@ It explores subjects such as:
 - data visualization
 - convert to/from external formats like csv, Excel, RDB, API etc
 - multi-modal LLM for classification, content generation etc.
+- distributed AI computing using the ray framework
