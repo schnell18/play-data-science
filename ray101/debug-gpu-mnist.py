@@ -12,6 +12,7 @@ if __name__ == "__main__":
     storage_path = "/tmp/ray_train"
     run_config = RunConfig(storage_path=storage_path, name="distributed-mnist-resnet18")
     scaling_config = ScalingConfig(num_workers=1, use_gpu=True)
+    # scaling_config = ScalingConfig(num_workers=1, use_gpu=False)
 
     trainer = TorchTrainer(
         train_loop_ray_train,

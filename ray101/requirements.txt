@@ -1,4 +1,12 @@
+pandas
+numpy<2
+torch==2.2.2
+torchvision
 ray
 pyarrow
 xgboost
 torchmetrics
+jupyterlab
+matplotlib
+ipywidgets
+TensorboardX

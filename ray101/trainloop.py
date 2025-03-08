@@ -3,13 +3,13 @@ import os
 import tempfile
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import ray
 import torch
 import torchmetrics
 from torch.nn import CrossEntropyLoss
+from torch.nn.parallel import DistributedDataParallel
 from torch.optim import Adam
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, DistributedSampler
 from torchvision.datasets import MNIST
 from torchvision.models import resnet18
 from torchvision.transforms import Compose, Normalize, ToTensor
@@ -54,7 +54,6 @@ def train_loop_ray_train(config: dict):  # pass in hyperparameters in config
     criterion = CrossEntropyLoss()
     # Use Ray Train to wrap the model with DistributedDataParallel
     model = load_model_ray_train()
-    print(dir(model))
     optimizer = Adam(model.parameters(), lr=1e-5)
 
     # Calculate the batch size for each worker
@@ -70,7 +69,8 @@ def train_loop_ray_train(config: dict):  # pass in hyperparameters in config
 
     for epoch in range(config["num_epochs"]):
         # Ensure data is on the correct device
-        data_loader.sampler.set_epoch(epoch)
+        if isinstance(data_loader.sampler, DistributedSampler):
+            data_loader.sampler.set_epoch(epoch)
 
         for (
             images,
@@ -116,14 +116,26 @@ def load_model_torch() -> torch.nn.Module:
     # return model.to("cuda")
 
 
-def build_data_loader_torch(batch_size: int) -> DataLoader:
-    transform = Compose([ToTensor(), Normalize((0.5,), (0.5,))])
-    dataset = MNIST(
-        root="/tmp/ray_data",
-        train=True,
-        download=True,
-        transform=transform,
-    )
+def get_mnist_dataset(do_transform=True):
+    if do_transform:
+        transform = Compose([ToTensor(), Normalize((0.5,), (0.5,))])
+        dataset = MNIST(
+            root="/tmp/ray_data",
+            train=True,
+            download=True,
+            transform=transform,
+        )
+    else:
+        dataset = MNIST(
+            root="/tmp/ray_data",
+            train=True,
+            download=True,
+        )
+    return dataset
+
+
+def build_data_loader(batch_size: int) -> DataLoader:
+    dataset = get_mnist_dataset()
     train_loader = DataLoader(
         dataset,
         batch_size=batch_size,
@@ -131,6 +143,10 @@ def build_data_loader_torch(batch_size: int) -> DataLoader:
         drop_last=True,
     )
     return train_loader
+
+
+def build_data_loader_torch(batch_size: int) -> DataLoader:
+    return build_data_loader(batch_size)
 
 
 def build_data_loader_ray_train(batch_size: int) -> DataLoader:
@@ -147,7 +163,9 @@ def build_data_loader_ray_train(batch_size: int) -> DataLoader:
         shuffle=True,
         drop_last=True,
     )
-    return ray.train.torch.prepare_data_loader(train_loader)
+    return ray.train.torch.prepare_data_loader(
+        train_loader, torch.cuda.device_count() > 1
+    )
 
 
 def report_metrics_torch(
@@ -207,17 +225,10 @@ def save_checkpoint_and_metrics_ray_train(
         checkpoint = None
         if ray.train.get_context().get_world_rank() == 0:
             checkpoint_path = os.path.join(tcpd, "model.pt")
-            torch.save(model.module.state_dict(), checkpoint_path)
+            if isinstance(model, DistributedDataParallel):
+                torch.save(model.module.state_dict(), checkpoint_path)
+            else:
+                torch.save(model.state_dict(), checkpoint_path)
             checkpoint = ray.train.Checkpoint.from_directory(tcpd)
 
         ray.train.report(metrics, checkpoint=checkpoint)
-
-
-def main():
-    dataset = MNIST(root="./data", train=True, download=True)
-
-    fig, axes = plt.subplots(1, 10, figsize=(20, 2))
-    for i in range(10):
-        axes[i].imshow(dataset.train_data[i], cmap="gray")
-        axes[i].axis("off")
-        axes[i].set_title(dataset.train_labels[i].item())

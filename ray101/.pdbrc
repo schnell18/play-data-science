@@ -1,2 +1,3 @@
-b /Users/justin/work/explore/play-data-science/ray101/trainloop.py:56
-b /Users/justin/work/explore/play-data-science/ray101/trainloop.py:109
+#b /home/justin/work/play-data-science/ray101/debug-gpu-mnist.py:14
+b /home/justin/work/play-data-science/ray101/trainloop.py:64
+b /home/justin/work/play-data-science/ray101/trainloop.py:109
