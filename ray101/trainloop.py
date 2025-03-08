@@ -63,9 +63,10 @@ def train_loop_ray_train(config: dict):  # pass in hyperparameters in config
     # Use Ray Train to wrap the data loader as a DistributedSampler
     data_loader = build_data_loader_ray_train(batch_size=batch_size)
 
-    acc = torchmetrics.Accuracy(task="multiclass", num_classes=10).to(model.device)
+    device = next(model.parameters()).device
+    acc = torchmetrics.Accuracy(task="multiclass", num_classes=10).to(device)
     # Add AUROC metric
-    auroc = torchmetrics.AUROC(task="multiclass", num_classes=10).to(model.device)
+    auroc = torchmetrics.AUROC(task="multiclass", num_classes=10).to(device)
 
     for epoch in range(config["num_epochs"]):
         # Ensure data is on the correct device
