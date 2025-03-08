@@ -54,6 +54,7 @@ def train_loop_ray_train(config: dict):  # pass in hyperparameters in config
     criterion = CrossEntropyLoss()
     # Use Ray Train to wrap the model with DistributedDataParallel
     model = load_model_ray_train()
+    print(dir(model))
     optimizer = Adam(model.parameters(), lr=1e-5)
 
     # Calculate the batch size for each worker
