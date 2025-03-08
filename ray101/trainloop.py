@@ -1,8 +1,10 @@
 import csv
 import os
+import tempfile
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import ray
 import torch
 import torchmetrics
 from torch.nn import CrossEntropyLoss
@@ -48,6 +50,46 @@ def train_loop_torch(
         )
 
 
+def train_loop_ray_train(config: dict):  # pass in hyperparameters in config
+    criterion = CrossEntropyLoss()
+    # Use Ray Train to wrap the model with DistributedDataParallel
+    model = load_model_ray_train()
+    optimizer = Adam(model.parameters(), lr=1e-5)
+
+    # Calculate the batch size for each worker
+    global_batch_size = config["global_batch_size"]
+    batch_size = global_batch_size // ray.train.get_context().get_world_size()
+    # Use Ray Train to wrap the data loader as a DistributedSampler
+    data_loader = build_data_loader_ray_train(batch_size=batch_size)
+
+    acc = torchmetrics.Accuracy(task="multiclass", num_classes=10).to(model.device)
+    # Add AUROC metric
+    auroc = torchmetrics.AUROC(task="multiclass", num_classes=10).to(model.device)
+
+    for epoch in range(config["num_epochs"]):
+        # Ensure data is on the correct device
+        data_loader.sampler.set_epoch(epoch)
+
+        for (
+            images,
+            labels,
+        ) in data_loader:  # images, labels are now sharded across the workers
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            optimizer.zero_grad()
+            loss.backward()  # gradients are now accumulated across the workers
+            optimizer.step()
+            acc(outputs, labels)
+            auroc(outputs, labels)
+
+        # Use Ray Train to report metrics
+        metrics = print_metrics_ray_train(loss, acc.compute(), auroc.compute())
+
+        # Use Ray Train to save checkpoint and metrics
+        save_checkpoint_and_metrics_ray_train(model, metrics)
+        acc.reset()
+
+
 def build_resnet18():
     model = resnet18(num_classes=10)
     model.conv1 = torch.nn.Conv2d(
@@ -61,6 +103,11 @@ def build_resnet18():
     return model
 
 
+def load_model_ray_train() -> torch.nn.Module:
+    model = build_resnet18()
+    return ray.train.torch.prepare_model(model)
+
+
 def load_model_torch() -> torch.nn.Module:
     model = build_resnet18()
     return model
@@ -70,7 +117,7 @@ def load_model_torch() -> torch.nn.Module:
 def build_data_loader_torch(batch_size: int) -> DataLoader:
     transform = Compose([ToTensor(), Normalize((0.5,), (0.5,))])
     dataset = MNIST(
-        root="./data",
+        root="/tmp/ray_data",
         train=True,
         download=True,
         transform=transform,
@@ -82,6 +129,23 @@ def build_data_loader_torch(batch_size: int) -> DataLoader:
         drop_last=True,
     )
     return train_loader
+
+
+def build_data_loader_ray_train(batch_size: int) -> DataLoader:
+    transform = Compose([ToTensor(), Normalize((0.5,), (0.5,))])
+    dataset = MNIST(
+        root="/tmp/ray_data",
+        train=True,
+        download=True,
+        transform=transform,
+    )
+    train_loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+    )
+    return ray.train.torch.prepare_data_loader(train_loader)
 
 
 def report_metrics_torch(
@@ -96,6 +160,32 @@ def report_metrics_torch(
     return metrics
 
 
+def print_metrics_ray_train(
+    loss: torch.Tensor, accuracy: torch.Tensor, auroc: torch.Tensor
+) -> None:
+    metrics = {
+        "loss": loss.item(),
+        "accuracy": accuracy.item(),
+        "auroc": auroc.item(),
+    }
+    if ray.train.get_context().get_world_rank() == 0:
+        print(metrics)
+    return metrics
+
+
+def report_metrics_ray_train(
+    loss: torch.Tensor, accuracy: torch.Tensor, epoch: int
+) -> None:
+    metrics = {
+        "loss": loss.item(),
+        "epoch": epoch,
+        "accuracy": accuracy.item(),
+    }
+    if ray.train.get_context().get_world_rank() == 0:
+        print(metrics)
+    return metrics
+
+
 def save_checkpoint_and_metrics_torch(
     metrics: dict[str, float], model: torch.nn.Module, local_path: str
 ) -> None:
@@ -105,6 +195,20 @@ def save_checkpoint_and_metrics_torch(
 
     checkpoint_path = os.path.join(local_path, "model.pt")
     torch.save(model.state_dict(), checkpoint_path)
+
+
+def save_checkpoint_and_metrics_ray_train(
+    model: torch.nn.Module,
+    metrics: dict[str, float],
+) -> None:
+    with tempfile.TemporaryDirectory() as tcpd:
+        checkpoint = None
+        if ray.train.get_context().get_world_rank() == 0:
+            checkpoint_path = os.path.join(tcpd, "model.pt")
+            torch.save(model.module.state_dict(), checkpoint_path)
+            checkpoint = ray.train.Checkpoint.from_directory(tcpd)
+
+        ray.train.report(metrics, checkpoint=checkpoint)
 
 
 def main():
